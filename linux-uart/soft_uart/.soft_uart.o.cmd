@@ -1,0 +1,1 @@
+cmd_/home/pi/git/soft_uart/soft_uart.o := ld -EL    -r -o /home/pi/git/soft_uart/soft_uart.o /home/pi/git/soft_uart/module.o /home/pi/git/soft_uart/raspberry_soft_uart.o /home/pi/git/soft_uart/queue.o 

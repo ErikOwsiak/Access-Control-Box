@@ -1,0 +1,1 @@
+cmd_/home/pi/git/uart_gsm/uart_gsm.ko := ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/pi/git/uart_gsm/uart_gsm.ko /home/pi/git/uart_gsm/uart_gsm.o /home/pi/git/uart_gsm/uart_gsm.mod.o ;  true
