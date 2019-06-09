@@ -1,7 +1,11 @@
 #!/usr/bin/python
 
-import sys, time, serial
+import sys
+import time
+import serial
 import sqlite3
+import conf
+import smsdb
 import sim800 as sim
 
 
@@ -17,26 +21,17 @@ ttyGSM = "/dev/ttyGSM0"
 doorBellLastPress = None
 
 
-def init_gsm():
-	try:
-		global gsm
-		print "init_gsm..."
-		gsm = sim.sim800(ttyGSM, baudRate)
-		gsm.init()
-	except Exception as x:
-		print x
-		time.sleep(2)
-		init_gsm()
-
 def door_bell_pressed():
 	global doorBellLastPress
 	if doorBellLastPress is None:
 		doorBellLastPress = time.time()
-		gsm.sendSms("883279496", "Main Door Bell Button Pressed!")
+		#gsm.sendSms("883279496", "Main Door Bell Button Pressed!")
+		smsdb.add_msg(0, "", "Main Door Bell Button Pressed!")
 	elif time.time() - doorBellLastPress > 4:
 		doorBellLastPress = time.time()
-		gsm.sendSms("883279496", "Main Door Bell Button Pressed!")
-			
+		#gsm.sendSms("883279496", "Main Door Bell Button Pressed!")
+		smsdb.add_msg(0, "", "Main Door Bell Button Pressed!")
+		
 def on_ardu_data_in():
 	try:
 		global ardu
@@ -55,7 +50,10 @@ def on_ardu_data_in():
 def system_boot():
 	try:
 		print "system_boot..."
-		gsm.sendSms("883279496", "System Boot")
+		val = conf.get_val("adminTels")
+		# exp: adminTels:= 883279496; 555222999;
+		for s in [s.strip() for s in val.split(";")]:
+			smsdb.add_msg(0, s, "System Boot Event")
 		return True
 	except Exception as x:
 		print x
@@ -64,10 +62,10 @@ def system_boot():
 		
 def main():
 	print "__main__"
-	init_gsm()
 	system_boot()
 	on_ardu_data_in()
 
 
 if __name__ == "__main__":
+	conf.load()
 	main()

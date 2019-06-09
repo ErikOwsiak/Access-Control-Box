@@ -1,5 +1,6 @@
 
-import time, serial
+import time
+import serial
 
 
 CRLZ = '\x1A'
